@@ -3,7 +3,6 @@
 	"name": "Config Editor",
 	"version": "1.0",
 	"codeowners": ["@htmltiger"]
-	"domain": "config_editor"
 	"documentation": "https://github.com/htmltiger/config-editor-card"
 	"issue_tracker": "https://github.com/htmltiger/config-editor/issues"
 	"iot_class": "local_polling"
