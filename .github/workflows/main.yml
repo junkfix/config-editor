@@ -3,8 +3,21 @@ name: Validate with hassfest
 on:
   push:
   pull_request:
-
+env:
+  DEFAULT_PYTHON: 3.8
 jobs:
+  hacs:
+    runs-on: ubuntu-latest
+    name: HACS
+    steps:
+      - name: Check out the repository
+        uses: "actions/checkout@v2.4.0"
+
+      - name: HACS validation
+        uses: "hacs/action@21.11.0"
+        with:
+          category: "integration"
+
   hassfest:
     runs-on: ubuntu-latest
     name: Hassfest
