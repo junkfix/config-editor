@@ -45,7 +45,7 @@ async def websocket_create(hass, connection, msg):
             v = os.path.join(r, d)
             if os.path.isdir(v):
                 p = d if s == '' else os.path.join(s, d)
-                if(p.count(os.sep) < 2):
+                if(p.count(os.sep) < 2) and p != 'custom_components':
                     rec(v, p)
                     drec(v, p)
 
