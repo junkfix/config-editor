@@ -10,7 +10,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass, config):
     hass.components.websocket_api.async_register_command(websocket_create)
-    hass.states.async_set(DOMAIN+".version", 1)
+    hass.states.async_set(DOMAIN+".version", 2)
     return True
 
 
@@ -28,8 +28,26 @@ async def websocket_create(hass, connection, msg):
     action = msg["action"]
     yamlname = "tmptest.yaml"
     if (msg["file"].endswith(".yaml")):
-        yamlname = msg["file"]
+        yamlname = msg["file"].replace("../", "/").strip('/')
     fullpath = hass.config.path(yamlname)
+
+    def rec(p, q):
+        r = [
+            f for f in os.listdir(p) if os.path.isfile(os.path.join(p, f)) and
+            f.endswith(".yaml")
+        ]
+        for j in r:
+            p = j if q == '' else os.path.join(q, j)
+            listyaml.append(p)
+
+    def drec(r, s):
+        for d in os.listdir(r):
+            v = os.path.join(r, d)
+            if os.path.isdir(v):
+                p = d if s == '' else os.path.join(s, d)
+                if(p.count(os.sep) < 2):
+                    rec(v, p)
+                    drec(v, p)
 
     if (action == 'load'):
         _LOGGER.info('Loading '+fullpath)
@@ -52,6 +70,9 @@ async def websocket_create(hass, connection, msg):
         content = msg["data"]
         res = "Saved"
         try:
+            dirnm = os.path.dirname(fullpath)
+            if not os.path.isdir(dirnm):
+                os.makedirs(dirnm, exist_ok=True)
             with AtomicWriter(fullpath, overwrite=True).open() as fdesc:
                 os.fchmod(fdesc.fileno(), 0o644)
                 fdesc.write(content)
@@ -66,26 +87,9 @@ async def websocket_create(hass, connection, msg):
 
     elif (action == 'list'):
         dirnm = os.path.dirname(hass.config.path(yamlname))
-        listyaml = [
-            f for f in os.listdir(dirnm)
-            if os.path.isfile(os.path.join(dirnm, f)) and
-            f.endswith(".yaml")
-        ]
-        listdeep = [
-            d for d in os.listdir(dirnm)
-            if os.path.isdir(os.path.join(dirnm, d))
-        ]
-        if (len(listdeep) > 0):
-            for d in listdeep:
-                deep = os.path.join(dirnm, d)
-                sublist = [
-                    f for f in os.listdir(deep)
-                    if os.path.isfile(os.path.join(deep, f)) and
-                    f.endswith(".yaml")
-                ]
-                if (len(sublist) > 0):
-                    for x in sublist:
-                        listyaml.append(os.path.join(d, x))
+        listyaml = []
+        rec(dirnm, '')
+        drec(dirnm, '')
         if (len(listyaml) < 1):
             listyaml = ['list_error.yaml']
         connection.send_result(
