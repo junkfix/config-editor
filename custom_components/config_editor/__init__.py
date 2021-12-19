@@ -75,7 +75,7 @@ async def websocket_create(hass, connection, msg):
                 os.makedirs(dirnm, exist_ok=True)
             with AtomicWriter(fullpath, overwrite=True).open() as fdesc:
                 try:
-                    os.fchmod(fdesc.fileno(), 0o644)
+                    os.fchmod(fdesc.fileno(), 0o666)
                 except:
                     pass
                 fdesc.write(content)
