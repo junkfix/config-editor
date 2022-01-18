@@ -10,7 +10,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass, config):
     hass.components.websocket_api.async_register_command(websocket_create)
-    hass.states.async_set(DOMAIN+".version", 2)
+    hass.states.async_set(DOMAIN+".version", 3)
     return True
 
 
@@ -22,19 +22,23 @@ async def async_setup(hass, config):
         vol.Required("action"): str,
         vol.Required("file"): str,
         vol.Required("data"): str,
+        vol.Required("ext"): str,
     }
 )
 async def websocket_create(hass, connection, msg):
     action = msg["action"]
-    yamlname = "tmptest.yaml"
-    if (msg["file"].endswith(".yaml")):
+    ext = msg["ext"]
+    if ext not in ["yaml","py","json","conf","js","txt","log"]:
+        ext = "yaml"
+    yamlname = "tmptest."+ext
+    if (msg["file"].endswith("."+ext)):
         yamlname = msg["file"].replace("../", "/").strip('/')
     fullpath = hass.config.path(yamlname)
 
     def rec(p, q):
         r = [
             f for f in os.listdir(p) if os.path.isfile(os.path.join(p, f)) and
-            f.endswith(".yaml")
+            f.endswith("."+ext)
         ]
         for j in r:
             p = j if q == '' else os.path.join(q, j)
@@ -62,7 +66,7 @@ async def websocket_create(hass, connection, msg):
         finally:
             connection.send_result(
                 msg["id"],
-                {'msg': res+': '+fullpath, 'file': yamlname, 'data': content}
+                {'msg': res+': '+fullpath, 'file': yamlname, 'data': content, 'ext': ext}
             )
 
     elif (action == 'save'):
@@ -94,8 +98,8 @@ async def websocket_create(hass, connection, msg):
         rec(dirnm, '')
         drec(dirnm, '')
         if (len(listyaml) < 1):
-            listyaml = ['list_error.yaml']
+            listyaml = ['list_error.'+ext]
         connection.send_result(
             msg["id"],
-            {'msg': str(len(listyaml))+' File(s)', 'file': listyaml}
+            {'msg': str(len(listyaml))+' File(s)', 'file': listyaml, 'ext': ext}
         )
