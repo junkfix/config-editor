@@ -23,6 +23,7 @@ async def async_setup(hass, config):
         vol.Required("file"): str,
         vol.Required("data"): str,
         vol.Required("ext"): str,
+        vol.Optional("depth", default=2): int
     }
 )
 async def websocket_create(hass, connection, msg):
@@ -50,7 +51,7 @@ async def websocket_create(hass, connection, msg):
             v = os.path.join(r, d)
             if os.path.isdir(v):
                 p = d if s == '' else os.path.join(s, d)
-                if(p.count(os.sep) < 3) and ( ext == 'all' or p != 'custom_components' ):
+                if(p.count(os.sep) < msg["depth"]) and ( ext == 'all' or p != 'custom_components' ):
                     rec(v, p)
                     drec(v, p)
 
@@ -107,7 +108,8 @@ async def websocket_create(hass, connection, msg):
         dirnm = os.path.dirname(hass.config.path(yamlname))
         listyaml = []
         rec(dirnm, '')
-        drec(dirnm, '')
+        if msg["depth"]>0:
+            drec(dirnm, '')
         if (len(listyaml) < 1):
             listyaml = ['list_error.'+ext]
         connection.send_result(
