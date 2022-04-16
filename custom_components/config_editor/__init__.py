@@ -90,11 +90,12 @@ async def websocket_create(hass, connection, msg):
             except:
                 mode = 0o666
             with AtomicWriter(fullpath, overwrite=True).open() as fdesc:
+                fdesc.write(content)
+            with open(fullpath, 'a') as fdesc:
                 try:
                     os.fchmod(fdesc.fileno(), mode)
                 except:
                     pass
-                fdesc.write(content)
         except:
             res = "Saving Failed"
             _LOGGER.exception(res+": %s", fullpath)
