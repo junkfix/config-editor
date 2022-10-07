@@ -86,10 +86,10 @@ async def websocket_create(hass, connection, msg):
             if not os.path.isdir(dirnm):
                 os.makedirs(dirnm, exist_ok=True)
             try:
-                statres = os.stat(fullpath)
-                mode = statres.st_mode
-                uid = statres.st_uid
-                gid = statres.st_gid
+                stat_res = os.stat(fullpath)
+                mode = stat_res.st_mode
+                uid = stat_res.st_uid
+                gid = stat_res.st_gid
             except:
                 mode = 0o666
                 uid = 0
