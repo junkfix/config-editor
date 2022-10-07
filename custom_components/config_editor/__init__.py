@@ -86,14 +86,20 @@ async def websocket_create(hass, connection, msg):
             if not os.path.isdir(dirnm):
                 os.makedirs(dirnm, exist_ok=True)
             try:
-                mode = os.stat(fullpath).st_mode
+                statres = os.stat(fullpath)
+                mode = statres.st_mode
+                uid = statres.st_uid
+                gid = statres.st_gid
             except:
                 mode = 0o666
+                uid = 0
+                gid = 0
             with AtomicWriter(fullpath, overwrite=True).open() as fdesc:
                 fdesc.write(content)
             with open(fullpath, 'a') as fdesc:
                 try:
                     os.fchmod(fdesc.fileno(), mode)
+                    os.fchown(fdesc.fileno(), uid, gid)
                 except:
                     pass
         except:
