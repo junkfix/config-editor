@@ -1,7 +1,7 @@
 {
 	"domain": "config_editor",
 	"name": "Config Editor",
-	"version": "4.1",
+	"version": "4.3",
 	"codeowners": ["@htmltiger"],
 	"documentation": "https://github.com/htmltiger/config-editor-card",
 	"issue_tracker": "https://github.com/htmltiger/config-editor/issues",
