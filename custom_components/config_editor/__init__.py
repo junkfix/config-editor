@@ -9,7 +9,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup(hass, config):
-    hass.components.websocket_api.async_register_command(websocket_create)
+    websocket_api.async_register_command(hass, websocket_create)
     hass.states.async_set(DOMAIN+".version", 4)
     return True
 
