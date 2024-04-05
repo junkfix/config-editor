@@ -2,8 +2,8 @@
 	"domain": "config_editor",
 	"name": "Config Editor",
 	"version": "4.3",
-	"codeowners": ["@htmltiger"],
-	"documentation": "https://github.com/htmltiger/config-editor-card",
-	"issue_tracker": "https://github.com/htmltiger/config-editor/issues",
+	"codeowners": ["@junkfix"],
+	"documentation": "https://github.com/junkfix/config-editor-card",
+	"issue_tracker": "https://github.com/junkfix/config-editor/issues",
 	"iot_class": "local_polling"
 }
