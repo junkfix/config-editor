@@ -1,9 +1,9 @@
 {
 	"domain": "config_editor",
 	"name": "Config Editor",
-	"version": "4.3",
 	"codeowners": ["@junkfix"],
 	"documentation": "https://github.com/junkfix/config-editor-card",
 	"issue_tracker": "https://github.com/junkfix/config-editor/issues",
-	"iot_class": "local_polling"
+	"iot_class": "local_polling",
+	"version": "4.4"
 }
