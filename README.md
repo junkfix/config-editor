@@ -1,10 +1,10 @@
 Home Assistant Configuration Editor Helper
 
 More info:
-https://github.com/htmltiger/config-editor-card
+https://github.com/junkfix/config-editor-card
 
 
-![screenshot](https://github.com/htmltiger/config-editor-card/raw/main/screenshot.png)
+![screenshot](https://github.com/junkfix/config-editor-card/raw/main/screenshot.png)
 
 ---
 
