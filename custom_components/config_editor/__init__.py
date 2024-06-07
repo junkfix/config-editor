@@ -66,8 +66,10 @@ async def websocket_create(hass, connection, msg):
         content = ''
         res = 'Loaded'
         try:
-            with open(fullpath, encoding="utf-8") as fdesc:
-                content = fdesc.read()
+            def read():
+                with open(fullpath, encoding="utf-8") as fdesc:
+                   return fdesc.read()
+            content = await hass.async_add_executor_job(read)
         except:
             res = 'Reading Failed'
             _LOGGER.exception("Reading failed: %s", fullpath)
@@ -96,12 +98,16 @@ async def websocket_create(hass, connection, msg):
                 gid = 0
             with AtomicWriter(fullpath, overwrite=True).open() as fdesc:
                 fdesc.write(content)
-            with open(fullpath, 'a') as fdesc:
-                try:
-                    os.fchmod(fdesc.fileno(), mode)
-                    os.fchown(fdesc.fileno(), uid, gid)
-                except:
-                    pass
+
+            def permi():
+                with open(fullpath, 'a') as fdesc:
+                    try:
+                        os.fchmod(fdesc.fileno(), mode)
+                        os.fchown(fdesc.fileno(), uid, gid)
+                    except:
+                        pass
+            await hass.async_add_executor_job(permi)
+
         except:
             res = "Saving Failed"
             _LOGGER.exception(res+": %s", fullpath)
