@@ -5,5 +5,5 @@
 	"documentation": "https://github.com/junkfix/config-editor-card",
 	"iot_class": "local_polling",
 	"issue_tracker": "https://github.com/junkfix/config-editor/issues",
-	"version": "4.4"
+	"version": "4.4.2"
 }
