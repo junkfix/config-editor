@@ -120,9 +120,13 @@ async def websocket_create(hass, connection, msg):
     elif (action == 'list'):
         dirnm = os.path.dirname(hass.config.path(yamlname))
         listyaml = []
-        rec(dirnm, '')
+        def reca():
+            rec(dirnm, '')
+        await hass.async_add_executor_job(reca)
         if msg["depth"]>0:
-            drec(dirnm, '')
+            def dreca():
+                drec(dirnm, '')
+            await hass.async_add_executor_job(dreca)
         if (len(listyaml) < 1):
             listyaml = ['list_error.'+ext]
         connection.send_result(
