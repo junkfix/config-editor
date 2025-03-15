@@ -29,7 +29,7 @@ async def async_setup(hass, config):
 async def websocket_create(hass, connection, msg):
     action = msg["action"]
     ext = msg["ext"]
-    if ext not in ["yaml","py","json","conf","js","txt","log","css","all"]:
+    if ext not in ["yaml","py","json","conf","js","txt","log","css","jinja","all"]:
         ext = "yaml"
 
     def extok(e):
