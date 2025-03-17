@@ -10,9 +10,11 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass, config):
     websocket_api.async_register_command(hass, websocket_create)
-    hass.states.async_set(DOMAIN+".version", 4)
     return True
 
+async def async_setup_entry(hass, entry):
+    websocket_api.async_register_command(hass, websocket_create)
+    return True
 
 @websocket_api.require_admin
 @websocket_api.async_response
@@ -29,6 +31,7 @@ async def async_setup(hass, config):
 async def websocket_create(hass, connection, msg):
     action = msg["action"]
     ext = msg["ext"]
+    cver = 5
     if ext not in ["yaml","py","json","conf","js","txt","log","css","jinja","all"]:
         ext = "yaml"
 
@@ -76,7 +79,7 @@ async def websocket_create(hass, connection, msg):
         finally:
             connection.send_result(
                 msg["id"],
-                {'msg': res+': '+fullpath, 'file': yamlname, 'data': content, 'ext': ext}
+                {'msg': res+': '+fullpath, 'file': yamlname, 'data': content, 'ext': ext, 'cver': cver}
             )
 
     elif (action == 'save'):
@@ -131,5 +134,5 @@ async def websocket_create(hass, connection, msg):
             listyaml = ['list_error.'+ext]
         connection.send_result(
             msg["id"],
-            {'msg': str(len(listyaml))+' File(s)', 'file': listyaml, 'ext': ext}
+            {'msg': str(len(listyaml))+' File(s)', 'file': listyaml, 'ext': ext, 'cver': cver}
         )
