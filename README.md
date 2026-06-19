@@ -1,3 +1,7 @@
+### Please try this better alternative
+### https://github.com/junkfix/file-shell
+----------------------
+
 Home Assistant Configuration Editor Helper
 
 More info:
